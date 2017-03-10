@@ -1,0 +1,5 @@
+[http]
+	sslVerify = false
+[user]
+	email = guipingdu@tuputech.com
+	name = 杜贵平
