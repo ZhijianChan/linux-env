@@ -10,6 +10,7 @@ cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
 
 sh ~/.oh-my-zsh/tools/upgrade.sh
+cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
 
 # vim
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
