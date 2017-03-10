@@ -12,6 +12,8 @@ cp ./vimrc ~/.vimrc
 sh ~/.oh-my-zsh/tools/upgrade.sh
 cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
 
+source ~/.zshrc
+
 # vim
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 git clone https://github.com/Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe
