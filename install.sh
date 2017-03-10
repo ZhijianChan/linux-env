@@ -1,11 +1,16 @@
 #!/bin/zsh
+root_dir=$PWD
 
 # install oh-my-zsh
-rm -rf ~/.oh-my-zsh
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+if [ ! -d ~/.oh-my-zsh ]; then
+    rm -rf ~/.oh-my-zsh
+    sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+else
+    cd ~/.oh-my-zsh && git checkout .
+fi
 
+cd $root_dir
 cp ./tmux.conf ~/.tmux.conf
-cp -rf ./oh-my-zsh ~/.oh-my-zsh
 cp ./zshrc ~/.zshrc
 cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
