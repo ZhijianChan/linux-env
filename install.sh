@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 # install oh-my-zsh
-# sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 rm -rf ~/.oh-my-zsh
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 cp ./tmux.conf ~/.tmux.conf
 cp -rf ./oh-my-zsh ~/.oh-my-zsh
