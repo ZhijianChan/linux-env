@@ -14,6 +14,7 @@ cp ./tmux.conf ~/.tmux.conf
 cp ./zshrc ~/.zshrc
 cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
+cp ./solarized.vim ~/.vim/colors/
 
 sh ~/.oh-my-zsh/tools/upgrade.sh
 cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
