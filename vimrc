@@ -1,27 +1,29 @@
-colorscheme molokai
-set term=screen
 set background=dark
-"set mouse=a
-set t_Co=256
+"colorscheme molokai 
+colorscheme solarized
+set term=xterm-256color
+"set term=xterm
+"set term=screen
+"set t_Co=256
+"语法高亮
+syntax enable
+syntax on
+set laststatus=2
+set ruler
 "Tab宽度
 set ts=4
 set expandtab
 "自动缩进
-"set autoindent
 set cindent
 "缩进宽度
 set shiftwidth=4
+"关闭错误信息响铃
+set noerrorbells
 "显示行号
 set number
-"语法高亮
-syntax enable
-syntax on
 "set hlsearch
 set cursorcolumn
 set cursorline
-"hi CursorColumn cterm=NONE ctermbg=8 
-"hi Cursorline cterm=NONE ctermbg=8
-"hi Comment cterm=NONE ctermfg=6
 " 设置折叠
 set foldmethod=manual
 
@@ -46,6 +48,18 @@ Plugin 'ascenator/L9', {'name': 'newL9'}
 "Plugin 'scrooloose/syntastic'
 "目录树
 Plugin 'scrooloose/nerdtree'
+"search file
+Plugin 'kien/ctrlp.vim'
+"python-doc
+Plugin 'python-mode/python-mode'
+"对齐工具 
+Plugin 'godlygeek/tabular'
+"快速注释
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'Lokaltog/vim-powerline'
+"状态栏
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
@@ -90,11 +104,9 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 " nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 " nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
 
-let g:ycm_min_num_of_chars_for_completion = 3                                                                                                                                                                       
-let g:ycm_min_num_identifier_candidate_chars = 2                                                                                                                                                                    
-let g:ycm_autoclose_preview_window_after_insertion = 1                                                                                                                                                              
-let g:ycm_autoclose_preview_window_after_completion = 1                                                                                                                                                             
-let g:ycm_filepath_completion_use_working_dir = 1                                                                                                                                                                   
-let g:ycm_disable_for_files_larger_than_kb = 50
-
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
