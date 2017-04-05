@@ -6,9 +6,11 @@ set term=xterm-256color
 "set term=screen
 "set t_Co=256
 "语法高亮
+set ignorecase
 syntax enable
 syntax on
 set laststatus=2
+set scrolloff=3
 set ruler
 "Tab宽度
 set ts=4
@@ -31,8 +33,8 @@ set guifont=YaHei\Consolas\Hybrid\11.5
 
 " 关闭文件时保存视图，打开文件时自动导入视图，配合代码折叠使用
 set viewdir=$HOME/.vim/view 
-autocmd BufWrite,FileWritePost * mkview
-autocmd BufRead,FileReadPost * loadview
+"autocmd BufWrite,FileWritePost * mkview
+"autocmd BufRead,FileReadPost * loadview
 
 "required
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -41,7 +43,6 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 "代码补全
 Plugin 'jiangmiao/auto-pairs'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -51,7 +52,8 @@ Plugin 'scrooloose/nerdtree'
 "search file
 Plugin 'kien/ctrlp.vim'
 "python-doc
-Plugin 'python-mode/python-mode'
+"Plugin 'python-mode/python-mode'
+Plugin 'Valloric/YouCompleteMe'
 "对齐工具 
 Plugin 'godlygeek/tabular'
 "快速注释
@@ -77,6 +79,7 @@ let g:ycm_complete_in_comments=1
 let g:ycm_confirm_extra_conf=0
 " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_global_ycm_extra_conf="~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
 " 引入 C++
 "标准库tags，这个没有也没关系，只要.ycm_extra_conf.py文件中指定了正确的标准库路径
 " set tags+=/data/misc/software/misc./vim/stdcpp.tags
@@ -99,15 +102,18 @@ let g:ycm_seed_identifiers_with_syntax=1
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 "let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
-" nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
-" nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
-" nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 
-let g:airline_theme='solarized'
+let g:airline_powerline_fonts = 1
+"let g:airline_theme='solarized'
+let g:airline_theme='molokai'
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
