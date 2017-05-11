@@ -1,6 +1,6 @@
 set background=dark
-"colorscheme molokai 
-colorscheme solarized
+colorscheme molokai 
+"colorscheme solarized
 set term=xterm-256color
 "set term=xterm
 "set term=screen
@@ -108,8 +108,8 @@ nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
-let g:solarized_termcolors=256
-let g:solarized_termtrans=1
+"let g:solarized_termcolors=256
+"let g:solarized_termtrans=1
 
 let g:airline_powerline_fonts = 1
 "let g:airline_theme='solarized'

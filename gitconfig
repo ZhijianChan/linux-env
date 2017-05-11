@@ -3,3 +3,7 @@
 [user]
 	email = guipingdu@tuputech.com
 	name = 杜贵平
+[color]
+	diff = auto
+[diff]
+	tool = vimdiff
