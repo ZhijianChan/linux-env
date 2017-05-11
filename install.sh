@@ -9,12 +9,17 @@ else
     cd ~/.oh-my-zsh && git checkout .
 fi
 
+if [ ! -d ~/.bin ]; then
+    mkdir ~/.bin
+fi
+
 cd $root_dir
 cp ./tmux.conf ~/.tmux.conf
 cp ./zshrc ~/.zshrc
 cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
-cp ./solarized.vim ~/.vim/colors/
+cp ./molokai.vim ~/.vim/colors/molokai.vim
+cp ./atom ~/.bin/atom
 
 sh ~/.oh-my-zsh/tools/upgrade.sh
 cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
@@ -22,8 +27,8 @@ cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
 source ~/.zshrc
 
 # vim
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-git clone https://github.com/Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe
-cd ~/.vim/bundle/YouCompleteMe
-git submodule update --init --recursive
-./install.py --clang-completer
+#git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+#git clone https://github.com/Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe
+#cd ~/.vim/bundle/YouCompleteMe
+#git submodule update --init --recursive
+#./install.py --clang-completer
