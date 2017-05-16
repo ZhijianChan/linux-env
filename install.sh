@@ -12,6 +12,9 @@ fi
 if [ ! -d ~/.bin ]; then
     mkdir ~/.bin
 fi
+if [ ! -d ~/.vim/colors ]; then
+    mkdir ~/.vim/colors
+fi
 
 cd $root_dir
 cp ./tmux.conf ~/.tmux.conf
