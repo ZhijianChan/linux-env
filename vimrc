@@ -67,6 +67,11 @@ filetype plugin indent on    " required
 
 "NERDTree 按下F2 调出/隐藏
 nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
+autocmd vimenter * NERDTree
+autocmd VimEnter * wincmd w
+autocmd BufRead * NERDTree
+autocmd BufRead * wincmd w
+
 
 " 插入匹配括号
 set showmatch 
