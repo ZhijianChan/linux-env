@@ -23,6 +23,7 @@ cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
 cp ./molokai.vim ~/.vim/colors/molokai.vim
 cp ./atom ~/.bin/atom
+cp ./clang-format ~/.clang-format
 
 sh ~/.oh-my-zsh/tools/upgrade.sh
 cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
