@@ -6,6 +6,7 @@ set term=xterm-256color
 "set term=screen
 "set t_Co=256
 "语法高亮
+set mouse=a
 set ignorecase
 syntax enable
 syntax on
