@@ -24,7 +24,7 @@ set shiftwidth=4
 set noerrorbells
 "显示行号
 set number
-"set hlsearch
+set hlsearch
 set cursorcolumn
 set cursorline
 " 设置折叠
