@@ -2,6 +2,8 @@ set background=dark
 colorscheme molokai 
 "colorscheme solarized
 set term=xterm-256color
+set nocompatible
+set backspace=indent,eol,start
 "set term=xterm
 "set term=screen
 "set t_Co=256
