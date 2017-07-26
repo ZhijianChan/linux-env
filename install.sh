@@ -14,9 +14,8 @@ if [ ! -d ~/.oh-my-zsh ]; then
 else
     cd ~/.oh-my-zsh && git checkout .
 fi
-cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
-
 cd $root_dir
+$(cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/)
 
 if [ ! -d ~/.bin ]; then
     mkdir ~/.bin
