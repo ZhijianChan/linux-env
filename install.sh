@@ -1,6 +1,12 @@
 #!/bin/zsh
 root_dir=$PWD
 
+cp ./tmux.conf ~/.tmux.conf
+cp ./zshrc ~/.zshrc
+cp ./gitconfig ~/.gitconfig
+cp ./vimrc ~/.vimrc
+cp ./clang-format ~/.clang-format
+
 # install oh-my-zsh
 if [ ! -d ~/.oh-my-zsh ]; then
     rm -rf ~/.oh-my-zsh
@@ -8,26 +14,29 @@ if [ ! -d ~/.oh-my-zsh ]; then
 else
     cd ~/.oh-my-zsh && git checkout .
 fi
+cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
+
+cd $root_dir
 
 if [ ! -d ~/.bin ]; then
     mkdir ~/.bin
 fi
-if [ ! -d ~/.vim/colors ]; then
-    mkdir ~/.vim/colors
-fi
-
-cd $root_dir
-cp ./tmux.conf ~/.tmux.conf
-cp ./zshrc ~/.zshrc
-cp ./gitconfig ~/.gitconfig
-cp ./vimrc ~/.vimrc
-cp ./molokai.vim ~/.vim/colors/molokai.vim
 cp ./atom ~/.bin/atom
-cp ./clang-format ~/.clang-format
+
+if [ ! -d ~/.vim/colors ]; then
+    mkdir -p ~/.vim/colors
+fi
+cp ./molokai.vim ~/.vim/colors/molokai.vim
+
+if [ ! -d ~/.supervisord ]; then
+    sudo pip install supervisor
+    mkdir -p ~/.supervisord/log
+    mkdir -p ~/.supervisord/conf.d
+    mkdir -p ~/.supervisord/tmp
+fi
+cp ./supervisord.conf ~/.supervisord/supervisord.conf
 
 sh ~/.oh-my-zsh/tools/upgrade.sh
-cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/
-
 source ~/.zshrc
 
 # vim
