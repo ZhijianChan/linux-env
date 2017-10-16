@@ -79,6 +79,7 @@ nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
 "autocmd BufRead * wincmd w
 
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
+let g:autopep8_max_line_length=120
 
 " 插入匹配括号
 set showmatch 
