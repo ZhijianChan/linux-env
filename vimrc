@@ -46,6 +46,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 "代码补全
 Plugin 'jiangmiao/auto-pairs'
+Plugin 'tell-k/vim-autopep8'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -77,6 +78,7 @@ nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
 "autocmd BufRead * NERDTree
 "autocmd BufRead * wincmd w
 
+autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
 
 " 插入匹配括号
 set showmatch 
