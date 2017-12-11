@@ -31,6 +31,8 @@ set cursorcolumn
 set cursorline
 " 设置折叠
 set foldmethod=manual
+" 插入匹配括号
+set showmatch 
 
 set guifont=YaHei\Consolas\Hybrid\11.5
 
@@ -47,7 +49,7 @@ Plugin 'VundleVim/Vundle.vim'
 "代码补全
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'tell-k/vim-autopep8'
-Plugin 'andviro/flake8-vim'
+Plugin 'nvie/vim-flake8'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -81,15 +83,8 @@ nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
 
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
 let g:autopep8_max_line_length=100
-
-let g:PyFlakeOnWrite = 1
-let g:PyFlakeRangeCommand = 'Q'
-let g:PyFlakeMaxLineLength = 100
-let g:PyFlakeCWindow = 6
-
-" 插入匹配括号
-set showmatch 
-""inoremap < <><LEFT>
+let g:flake8_show_in_file=1
+autocmd BufWritePost *.py call Flake8()
 
 " YouCompleteMe 功能
 " 补全功能在注释中同样有效
