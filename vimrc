@@ -47,6 +47,7 @@ Plugin 'VundleVim/Vundle.vim'
 "代码补全
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'tell-k/vim-autopep8'
+Plugin 'andviro/flake8-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -79,7 +80,12 @@ nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
 "autocmd BufRead * wincmd w
 
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
-let g:autopep8_max_line_length=120
+let g:autopep8_max_line_length=100
+
+let g:PyFlakeOnWrite = 1
+let g:PyFlakeRangeCommand = 'Q'
+let g:PyFlakeMaxLineLength = 100
+let g:PyFlakeCWindow = 6
 
 " 插入匹配括号
 set showmatch 
