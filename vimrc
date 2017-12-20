@@ -49,8 +49,6 @@ call vundle#begin()
 " VIM插件管理工具
 Plugin 'VundleVim/Vundle.vim'
 "代码补全
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'tell-k/vim-autopep8'
 Plugin 'nvie/vim-flake8'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
