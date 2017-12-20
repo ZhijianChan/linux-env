@@ -1,5 +1,5 @@
 set background=dark
-colorscheme molokai 
+colorscheme molokai
 "colorscheme solarized
 set term=xterm-256color
 set nocompatible
@@ -31,6 +31,9 @@ set cursorcolumn
 set cursorline
 " 设置折叠
 set foldmethod=manual
+" 插入匹配括号
+set showmatch
+" inoremap < <><LEFT>
 
 set guifont=YaHei\Consolas\Hybrid\11.5
 
@@ -42,49 +45,79 @@ set viewdir=$HOME/.vim/view
 "required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-"VIM插件管理工具
+" VIM插件管理工具
 Plugin 'VundleVim/Vundle.vim'
-"代码补全
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'tell-k/vim-autopep8'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
-"Plugin 'scrooloose/syntastic'
-"目录树
+Plugin 'rhysd/vim-clang-format'
+" 括号、引号补全
+Plugin 'jiangmiao/auto-pairs'
+" python代码缩进提示
+Plugin 'Yggdroot/indentLine'
+" python代码格式
+Plugin 'tell-k/vim-autopep8'
+" 语法检查
+Plugin 'vim-syntastic/syntastic'
+" 目录树
 Plugin 'scrooloose/nerdtree'
-"search file
+" 快速查找文件
 Plugin 'kien/ctrlp.vim'
 "python-doc
 "Plugin 'python-mode/python-mode'
+" 代码补全
 Plugin 'Valloric/YouCompleteMe'
-"对齐工具 
-Plugin 'godlygeek/tabular'
-"快速注释
+" 对齐工具
+"Plugin 'godlygeek/tabular'
+" 快速注释
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Lokaltog/vim-powerline'
-"状态栏
+" 状态栏
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-
-Plugin 'rhysd/vim-clang-format'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-"NERDTree 按下F2 调出/隐藏
+" ===== Plugin 'scrooloose/nerdtree' =====
+" 按下F2 调出/隐藏
 nmap <silent> <F2> :execute 'NERDTreeToggle ' . getcwd()<CR>
+let NERDTreeChDirMode=1
+let NERDTreeShowBookmarks=1
+let NERDTreeWinSize=28
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '\.git$']
+" 只在最左边的窗口打开
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" 启动vim自动打开
 "autocmd vimenter * NERDTree
 "autocmd VimEnter * wincmd w
 "autocmd BufRead * NERDTree
 "autocmd BufRead * wincmd w
 
+" ===== Plugin 'tell-k/vim-autopep8' =====
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
 let g:autopep8_max_line_length=120
 
-" 插入匹配括号
-set showmatch 
-""inoremap < <><LEFT>
+" ===== Plugin 'kien/ctrlp.vim' =====
+" Ctrl+p 快速搜索
 
+" ===== Plugin 'vim-syntastic/syntastic' =====
+map <F5> :SyntasticToggleMode<CR> :SyntasticCheck<CR>
+let g:syntastic_python_checkers = ['flake8']
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 1
+
+" ===== Plugin 'Yggdroot/indentLine' =====
+let g:indentLine_char = "┆"
+let g:indentLine_enabled = 1
+"let g:autopep8_disable_show_diff=1
+
+" ===== Plugin 'Valloric/YouCompleteMe' =====
 " YouCompleteMe 功能
 " 补全功能在注释中同样有效
 let g:ycm_complete_in_comments=1
@@ -93,8 +126,7 @@ let g:ycm_confirm_extra_conf=0
 " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_tags_files=1
 let g:ycm_global_ycm_extra_conf="~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
-" 引入 C++
-"标准库tags，这个没有也没关系，只要.ycm_extra_conf.py文件中指定了正确的标准库路径
+" 引入C++ 标准库tags，这个没有也没关系，只要.ycm_extra_conf.py文件中指定了正确的标准库路径
 " set tags+=/data/misc/software/misc./vim/stdcpp.tags
 " YCM 集成 OmniCppComplete 补全引擎，设置其快捷键
 " inoremap <leader>; <C-x><C-o>
@@ -116,17 +148,18 @@ let g:ycm_seed_identifiers_with_syntax=1
 "let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
-
+" 快速跳转
 nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+" ===== Plugin 'vim-airline/vim-airline' =====
 "let g:solarized_termcolors=256
 "let g:solarized_termtrans=1
-
 let g:airline_powerline_fonts = 1
 "let g:airline_theme='solarized'
 let g:airline_theme='molokai'
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+" ==== END ====
