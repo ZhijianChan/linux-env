@@ -1,4 +1,5 @@
 set background=dark
+set colorcolumn=100
 colorscheme molokai
 "colorscheme solarized
 set term=xterm-256color
@@ -47,6 +48,10 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " VIM插件管理工具
 Plugin 'VundleVim/Vundle.vim'
+"代码补全
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'tell-k/vim-autopep8'
+Plugin 'nvie/vim-flake8'
 Plugin 'tpope/vim-fugitive'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -96,7 +101,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 " ===== Plugin 'tell-k/vim-autopep8' =====
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
-let g:autopep8_max_line_length=120
+let g:autopep8_max_line_length=100
+" autocmd BufWritePost *.py call Flake8()
 
 " ===== Plugin 'kien/ctrlp.vim' =====
 " Ctrl+p 快速搜索
