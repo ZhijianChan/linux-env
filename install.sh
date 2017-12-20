@@ -22,6 +22,11 @@ if [ ! -d ~/.bin ]; then
 fi
 cp ./atom ~/.bin/atom
 
+if [ ! -d ~/.config ]; then
+    mkdir ~/.config
+fi
+cp ./flake8 ~/.config/flake8
+
 if [ ! -d ~/.vim/colors ]; then
     mkdir -p ~/.vim/colors
 fi
