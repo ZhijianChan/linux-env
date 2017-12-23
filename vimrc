@@ -1,5 +1,5 @@
 set background=dark
-set colorcolumn=100
+set colorcolumn=80
 colorscheme molokai
 "colorscheme solarized
 set term=xterm-256color
