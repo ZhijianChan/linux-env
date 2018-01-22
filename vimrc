@@ -78,6 +78,7 @@ Plugin 'Lokaltog/vim-powerline'
 " 状态栏
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tmhedberg/SimpylFold'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
