@@ -1,16 +1,24 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
-export PATH=${HOME}/.bin:/usr/local/vim-8.0.0599/bin:$PATH
+uname=$(uname)
+
+if [ ${uname} = "Linux" ]; then
+    export PATH=${HOME}/.bin:/usr/local/vim-8.0.0599/bin:$PATH
+    if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
+        ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
+        export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+    fi
+else
+    export PATH=${HOME}/.bin:/Applications/MacVim.app/Contents/bin:$PATH
+    export PATH=${PATH}:${HOME}/Library/Python/3.6/bin
+fi
 
 # Path to your oh-my-zsh installation.
-export ZSH=/home/duguiping/.oh-my-zsh
+export ZSH=${HOME}/.oh-my-zsh
 export TERM=xterm-256color
-
-if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
-    ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
-    export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-fi
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
