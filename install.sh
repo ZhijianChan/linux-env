@@ -20,7 +20,6 @@ $(cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/)
 if [ ! -d ~/.bin ]; then
     mkdir ~/.bin
 fi
-cp ./atom ~/.bin/atom
 
 if [ ! -d ~/.config ]; then
     mkdir ~/.config
