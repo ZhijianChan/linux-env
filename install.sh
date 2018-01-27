@@ -30,6 +30,7 @@ if [ ! -d ~/.vim/colors ]; then
     mkdir -p ~/.vim/colors
 fi
 cp ./molokai.vim ~/.vim/colors/molokai.vim
+cp ./solarized.vim ~/.vim/colors/solarized.vim
 
 if [ ! -d ~/.supervisord ]; then
     sudo pip install supervisor
