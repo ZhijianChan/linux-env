@@ -19,6 +19,14 @@ if [ $(uname) = "Darwin" ]; then
         alias fgrep='fgrep --color'
     fi
 else
+    eval `dircolors -b $HOME/.dir_colors`
+
+    alias ls='ls -F --show-control-chars --color=auto'
+    alias ll='ls -al'
+    alias grep='grep --color'
+    alias egrep='egrep --color'
+    alias fgrep='fgrep --color'
+
     export PATH=${HOME}/.bin:/usr/local/vim-8.0.0599/bin:$PATH
     if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
         ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
