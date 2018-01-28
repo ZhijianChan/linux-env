@@ -3,17 +3,27 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-uname=$(uname)
+if [ $(uname) = "Darwin" ]; then
+    # for MaxOS
+    export PATH=${HOME}/.bin:/Applications/MacVim.app/Contents/bin:$PATH
+    export PATH=${PATH}:${HOME}/Library/Python/3.6/bin
 
-if [ ${uname} = "Linux" ]; then
+    if [ ! -z $(brew list | grep coreutils) ]; then
+        export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+        eval `gdircolors -b $HOME/.dir_colors`
+
+        alias ls='ls -F --show-control-chars --color=auto'
+        alias ll='ls -al'
+        alias grep='grep --color'
+        alias egrep='egrep --color'
+        alias fgrep='fgrep --color'
+    fi
+else
     export PATH=${HOME}/.bin:/usr/local/vim-8.0.0599/bin:$PATH
     if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
         ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
         export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
     fi
-else
-    export PATH=${HOME}/.bin:/Applications/MacVim.app/Contents/bin:$PATH
-    export PATH=${PATH}:${HOME}/Library/Python/3.6/bin
 fi
 
 # Path to your oh-my-zsh installation.

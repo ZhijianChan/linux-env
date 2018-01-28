@@ -6,6 +6,7 @@ cp ./zshrc ~/.zshrc
 cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
 cp ./clang-format ~/.clang-format
+cp ./dircolors.256dark ~/.dircolors
 
 # install oh-my-zsh
 if [ ! -d ~/.oh-my-zsh ]; then
