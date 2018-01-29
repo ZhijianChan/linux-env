@@ -6,6 +6,7 @@ cp ./zshrc ~/.zshrc
 cp ./gitconfig ~/.gitconfig
 cp ./vimrc ~/.vimrc
 cp ./clang-format ~/.clang-format
+cp ./dircolors.256dark ~/.dir_colors
 
 # install oh-my-zsh
 if [ ! -d ~/.oh-my-zsh ]; then
@@ -20,7 +21,6 @@ $(cp ./pwzer.zsh-theme ~/.oh-my-zsh/themes/)
 if [ ! -d ~/.bin ]; then
     mkdir ~/.bin
 fi
-cp ./atom ~/.bin/atom
 
 if [ ! -d ~/.config ]; then
     mkdir ~/.config
@@ -31,6 +31,7 @@ if [ ! -d ~/.vim/colors ]; then
     mkdir -p ~/.vim/colors
 fi
 cp ./molokai.vim ~/.vim/colors/molokai.vim
+cp ./solarized.vim ~/.vim/colors/solarized.vim
 
 if [ ! -d ~/.supervisord ]; then
     sudo pip install supervisor

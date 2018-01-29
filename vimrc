@@ -2,8 +2,8 @@ set background=dark
 set encoding=utf-8
 set colorcolumn=80
 colorscheme molokai
-"colorscheme solarized
-set term=xterm-256color
+colorscheme solarized
+"set term=xterm-256color
 set nocompatible
 set backspace=indent,eol,start
 "set term=xterm
