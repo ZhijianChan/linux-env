@@ -169,3 +169,6 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 " ==== END ====
+
+" 高亮折叠效果(放前面可能会有配置冲突不生效)
+highlight Folded ctermfg=37 ctermbg=23
