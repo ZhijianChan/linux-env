@@ -33,6 +33,7 @@ set cursorcolumn
 set cursorline
 " 设置折叠
 set foldmethod=manual
+set fcs=vert:\|
 " 插入匹配括号
 set showmatch
 " inoremap < <><LEFT>
@@ -171,4 +172,4 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 " ==== END ====
 
 " 高亮折叠效果(放前面可能会有配置冲突不生效)
-highlight Folded ctermfg=37 ctermbg=23
+highlight Folded ctermfg=37 ctermbg=8
