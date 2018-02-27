@@ -3,7 +3,7 @@ before_script:
 
 rspec:
   script:
-    - echo 'doing'
+    - echo 'doing...'
 
 rubocop:
   script:
