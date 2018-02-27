@@ -1,0 +1,10 @@
+before_script:
+  - echo 'start'
+
+rspec:
+  script:
+    - echo 'doing'
+
+rubocop:
+  script:
+    - echo 'ok'
