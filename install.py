@@ -19,7 +19,7 @@ def run(cmd, cwd=None):
                                cwd=cwd)
     while process.returncode is None:
         line = process.stdout.readline()
-        if line == '':
+        if len(line) == 0:
             break
         print(line.rstrip())
     process.communicate()

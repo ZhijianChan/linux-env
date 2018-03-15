@@ -46,3 +46,9 @@
     # update
     ./vim_plugin.sh update
     ```
+
+- 使配置生效
+
+    ```zsh
+    source ~/.zshrc
+    ```
