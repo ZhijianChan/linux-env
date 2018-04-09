@@ -78,7 +78,7 @@ def check_configs():
                ('dircolors.256dark', '.dir_colors'),
                ('zshrc', '.zshrc')]
     if not os.path.isdir(os.path.expanduser('~/.config')):
-        os.makedirs('~/.config')
+        os.makedirs(os.path.expanduser('~/.config'))
     copy(os.path.join(WORKING_DIR, 'flake8'),
          os.path.join(HOME, '.config/flake8'))
     for src, path in configs:
