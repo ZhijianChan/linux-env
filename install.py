@@ -35,7 +35,7 @@ def copy(src, path, is_dir=False):
 
 def check_oh_my_zsh():
     if not os.path.isdir(os.path.expanduser('~/.oh-my-zsh')):
-        run('./install_oh_my_zsh.sh')
+        run('./oh_my_zsh.sh')
     else:
         run('cd %s/.oh-my-zsh && git checkout .' % HOME)
         run('sh %s/.oh-my-zsh/tools/upgrade.sh' % HOME)
