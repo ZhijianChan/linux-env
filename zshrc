@@ -27,7 +27,7 @@ else
     alias egrep='egrep --color'
     alias fgrep='fgrep --color'
 
-    export PATH=${HOME}/.bin:/usr/local/vim-8.0.0599/bin:$PATH
+    export PATH=${HOME}/.bin:/usr/local/anaconda3/bin:/usr/local/vim-8.0.0599/bin:$PATH
     if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
         ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
         export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
