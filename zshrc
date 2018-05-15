@@ -28,7 +28,7 @@ if [ $(uname) = "Darwin" ]; then
         alias fgrep='fgrep --color'
     fi
 else
-    source ${HOME}/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
     eval `dircolors -b $HOME/.dir_colors`
 
