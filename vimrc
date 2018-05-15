@@ -32,7 +32,7 @@ set hlsearch
 set cursorcolumn
 set cursorline
 " 设置折叠
-set foldmethod=manual
+"set foldmethod=manual
 set fcs=vert:\|
 " 插入匹配括号
 set showmatch
@@ -44,6 +44,7 @@ set guifont=YaHei\Consolas\Hybrid\11.5
 set viewdir=$HOME/.vim/view 
 "autocmd BufWrite,FileWritePost * mkview
 "autocmd BufRead,FileReadPost * loadview
+autocmd BufReadPost,FileReadPost *.py %foldopen
 
 "required
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -94,11 +95,10 @@ let NERDTreeShowHidden=1
 let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '\.git$']
 " 只在最左边的窗口打开
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let NERDTreeMapOpenInTab='<ENTER>'
 " 启动vim自动打开
-"autocmd vimenter * NERDTree
-"autocmd VimEnter * wincmd w
-"autocmd BufRead * NERDTree
-"autocmd BufRead * wincmd w
+autocmd vimenter,TabNew * NERDTree
+autocmd vimenter,TabNew * wincmd w
 
 " ===== Plugin 'tell-k/vim-autopep8' =====
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
@@ -109,6 +109,7 @@ let g:autopep8_max_line_length=100
 " Ctrl+p 快速搜索
 
 " ===== Plugin 'vim-syntastic/syntastic' =====
+let g:syntastic_python_python_exe = '/usr/local/python-3.6.5/bin/python3'
 map <F5> :SyntasticToggleMode<CR> :SyntasticCheck<CR>
 let g:syntastic_python_checkers = ['flake8']
 set statusline+=%#warningmsg#
@@ -126,6 +127,7 @@ let g:indentLine_enabled = 1
 
 " ===== Plugin 'Valloric/YouCompleteMe' =====
 " YouCompleteMe 功能
+let g:ycm_python_binary_path = '/usr/local/python-3.6.5/bin/python3'
 " 补全功能在注释中同样有效
 let g:ycm_complete_in_comments=1
 " 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示

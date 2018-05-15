@@ -3,8 +3,17 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+export EDITOR=vim
+bindkey -M viins '^S' history-incremental-pattern-search-forward
+bindkey -M viins '^R' history-incremental-pattern-search-backward
+
+alias rsync='rsync -rzvaP'
+alias ssh='ssh -A'
+
 if [ $(uname) = "Darwin" ]; then
     # for MaxOS
+    source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
     export PATH=${HOME}/.bin:/Applications/MacVim.app/Contents/bin:$PATH
     export PATH=${PATH}:${HOME}/Library/Python/3.6/bin
 
@@ -19,6 +28,8 @@ if [ $(uname) = "Darwin" ]; then
         alias fgrep='fgrep --color'
     fi
 else
+    source ${HOME}/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
     eval `dircolors -b $HOME/.dir_colors`
 
     alias ls='ls -F --show-control-chars --color=auto'
@@ -33,6 +44,8 @@ else
         export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
     fi
 fi
+# zsh-autosuggestions color
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=3'
 
 # Path to your oh-my-zsh installation.
 export ZSH=${HOME}/.oh-my-zsh
