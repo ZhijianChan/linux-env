@@ -44,7 +44,6 @@ set guifont=YaHei\Consolas\Hybrid\11.5
 set viewdir=$HOME/.vim/view 
 "autocmd BufWrite,FileWritePost * mkview
 "autocmd BufRead,FileReadPost * loadview
-autocmd BufReadPost,FileReadPost *.py %foldopen
 
 "required
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -97,8 +96,8 @@ let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '\.git$']
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let NERDTreeMapOpenInTab='<ENTER>'
 " 启动vim自动打开
-autocmd vimenter,TabNew * NERDTree
-autocmd vimenter,TabNew * wincmd w
+" autocmd vimenter,TabNew * NERDTree
+" autocmd vimenter,TabNew * wincmd w
 
 " ===== Plugin 'tell-k/vim-autopep8' =====
 autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
@@ -175,3 +174,5 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 
 " 高亮折叠效果(放前面可能会有配置冲突不生效)
 highlight Folded ctermfg=37 ctermbg=8
+" 默认打开所有折叠
+autocmd BufReadPost,FileReadPost *.py :set foldlevel=9
