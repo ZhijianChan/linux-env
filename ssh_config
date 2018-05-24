@@ -1,0 +1,7 @@
+Host *
+    SendEnv no
+    Protocol 2
+    ForwardAgent yes
+    ServerAliveInterval 30
+    PubkeyAuthentication yes
+    IdentityFile ~/.ssh/id_rsa
