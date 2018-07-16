@@ -34,7 +34,7 @@
 
     ```zsh
     cd ~/.zshenv
-    python install.py
+    python install.py --name=<xxx> --email=<xxx@tuputech.com>
     ```
 
 - 安装或更新 `vim` 插件
