@@ -18,10 +18,8 @@ WORKING_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def run(cmd, cwd=None):
     print('%srun:%s %s' % (COLOR_GREEN, COLOR_DEFAULT, cmd))
-    process = subprocess.Popen(cmd.split(), env=os.environ,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               cwd=cwd)
+    process = subprocess.Popen(cmd.split(), env=os.environ, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, cwd=cwd)
     while process.returncode is None:
         line = process.stdout.readline()
         if len(line) == 0:
@@ -47,8 +45,7 @@ def check_oh_my_zsh():
 
     copy(os.path.join(WORKING_DIR, 'mytheme.zsh-theme'),
          os.path.join(HOME, '.oh-my-zsh/themes/mytheme.zsh-theme'))
-    copy(os.path.join(WORKING_DIR, 'zshrc'),
-         os.path.join(HOME, '.zshrc'))
+    copy(os.path.join(WORKING_DIR, 'zshrc'), os.path.join(HOME, '.zshrc'))
 
     # zsh-autosuggestions
     url = 'https://github.com/zsh-users/zsh-autosuggestions'
@@ -67,8 +64,7 @@ def check_vim():
         run('mkdir %s/.vim/colors' % HOME)
     copy(os.path.join(WORKING_DIR, 'solarized.vim'),
          os.path.join(HOME, '.vim/colors/solarized.vim'))
-    copy(os.path.join(WORKING_DIR, 'molokai.vim'),
-         os.path.join(HOME, '.vim/colors/molokai.vim'))
+    copy(os.path.join(WORKING_DIR, 'molokai.vim'), os.path.join(HOME, '.vim/colors/molokai.vim'))
 
     if not os.path.isdir(os.path.expanduser('~/.vim/bundle/YouCompleteMe')):
         run('git clone https://github.com/Valloric/YouCompleteMe.git '
@@ -82,19 +78,14 @@ def check_vim():
 
 
 def check_configs():
-    configs = [('gitconfig', '.gitconfig'),
-               ('tmux.conf', '.tmux.conf'),
-               ('vimrc', '.vimrc'),
-               ('clang-format', '.clang-format'),
-               ('dircolors.256dark', '.dir_colors'),
+    configs = [('gitconfig', '.gitconfig'), ('tmux.conf', '.tmux.conf'), ('vimrc', '.vimrc'),
+               ('clang-format', '.clang-format'), ('dircolors.256dark', '.dir_colors'),
                ('zshrc', '.zshrc')]
     if not os.path.isdir(os.path.expanduser('~/.config')):
         os.makedirs(os.path.expanduser('~/.config'))
-    copy(os.path.join(WORKING_DIR, 'flake8'),
-         os.path.join(HOME, '.config/flake8'))
+    copy(os.path.join(WORKING_DIR, 'flake8'), os.path.join(HOME, '.config/flake8'))
     for src, path in configs:
-        copy(os.path.join(WORKING_DIR, src),
-             os.path.join(HOME, path))
+        copy(os.path.join(WORKING_DIR, src), os.path.join(HOME, path))
     run(cmd='git config --global user.name %s' % cmd_args['--name'], cwd=HOME)
     run(cmd='git config --global user.email %s' % cmd_args['--email'], cwd=HOME)
 

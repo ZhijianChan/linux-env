@@ -1,24 +1,25 @@
 #!/bin/bash
 
-DEFAULT_GPU_HOSTS={50..142}
-DEFAULT_BI_HOSTS=(59 88 97 127 142)
-DEFAULT_UPLOAD_HOSTS=(50 54)
-DEFAULT_API_HOSTS=()
+DEFAULT_GPU_HOSTS=$(seq 50 142)
+DEFAULT_BI_HOSTS=(59 88 127 129 131 132 142)
+DEFAULT_WEB_HOSTS=(50 54)
+DEFAULT_MODEL_HOSTS=(208 209)
+DEFAULT_BATCH_HOSTS=(17 18)
+DEFAULT_API_HOSTS=(58 60 69 71 72 73 74 75 76 77 78 79 83 84 85 102 134 135 136)
+DEFAULT_US_HOSTS=(4 35 80 90 93 105 139 143 168 187)
+DEFAULT_TRAIN_HOSTS=(61 62 63 81 82)
 
-# color
-COLOR_RED='\033[31m'
-COLOR_GREEN='\033[32m'
-COLOR_DEFAULT='\033[0m'
+DEFAULT_HOST_PREFIX="172.25.52."
 
 USAGE="
 Usage:
-    tp [-u <username>] [-h <host>] [-c <commands>] [-J <jump_host> | -j] [options]
+    tp [-u <username> | -z] [-h <host>] [-c <commands>] [-J <jump_host> | -j] [options]
     tp <host> [-c <commands>]
     tp route
-    tp mongo
+    tp adduser [-u <username> -h <host> -k <public_key>]
     tp --help"
 
-ARGS=`getopt -a -o jJ:h:u:c: -l help -- "$@"`
+ARGS=`getopt -a -o zjJ:h:u:c:k: -l help -- "$@"`
 if [ $? != 0 ]; then
     echo "${USAGE}"
     exit 1
@@ -26,31 +27,31 @@ fi
 
 eval set -- "${ARGS}"
 
+# color
+COLOR_RED='\033[31m'
+COLOR_GREEN='\033[32m'
+COLOR_DEFAULT='\033[0m'
+
+
 host=""
 jump=""
 commands=""
+public_key=""
 user="duguiping"
-host_prefix="172.25.52."
 
 while true
 do
     case "$1" in
-        -h)
-            host=$2; shift 2;;
-        -u)
-            user=$2; shift 2;;
-        -c)
-            commands=$2; shift 2;;
-        -j)
-            jump="-J 183.60.177.228"; shift;;
-        -J)
-            jump="-J $2"; shift 2;;
-        --)
-            shift; break;;
-        --help)
-            echo "${USAGE}"; exit 0;;
-        *)
-            echo "args error: $1"; exit 1;;
+        -h) host=$2; shift 2;;
+        -u) user=$2; shift 2;;
+        -z) user="zhangjiguo"; shift;;
+        -c) commands=$2; shift 2;;
+        -j) jump="-J 183.60.177.228"; shift;;
+        -J) jump="-J $2"; shift 2;;
+        -k) public_key=$2; shift 2;;
+        --) shift; break;;
+        --help) echo "${USAGE}"; exit 0;;
+        *) echo "args error: $1"; exit 1;;
     esac
 done
 
@@ -59,9 +60,6 @@ if [ "$1" == "route" ]; then
     sudo route add -net 172.25.52.0/24 192.168.1.250
     ssh-add -D
     ssh-add ${HOME}/.ssh/id_rsa
-    exit 0;
-elif [ "$1" == "mongo" ]; then
-    mongo "mongodb://172.25.52.24:27300,172.25.52.26:27300,172.25.52.40:27300,172.25.52.41:27300,172.25.52.42:27300/bi"
     exit 0;
 fi
 
@@ -72,15 +70,26 @@ fi
 for num in {1..255}
 do
     if [ "${host}" == "${num}" ]; then
-        host="${host_prefix}${host}"
+        host="${DEFAULT_HOST_PREFIX}${host}"
     fi
 done
 
-# echo host=${host} user=${user} commands=${commands}
+function remote_run()
+{
+    if [[ ${#host} -lt 3 ]]; then
+        host=${DEFAULT_HOST_PREFIX}${host}
+    fi
+    echo -e "${COLOR_GREEN}RUNNING${COLOR_DEFAULT}: $host"
+    ssh -At ${jump} ${user}@${host} "${commands}"
+    echo -ne "${COLOR_GREEN}FINISHED${COLOR_DEFAULT}: $host "
+    for i in {1..50}; do echo -n '-'; done
+    echo -e '\n'
+}
+
 case "${host}" in
-    "bi" | "gpu" | "api" | "upload")
+    "bi" | "gpu" | "api" | "web" | "train" | "model" | "batch")
         if [ -z "${commands}" ]; then
-            echo "${COLOR_GREEN}ERROR${COLOR_DEFAULT}: commands option missing."
+            echo -e "${COLOR_GREEN}ERROR${COLOR_DEFAULT}: commands option missing."
             exit 1
         fi
         
@@ -88,23 +97,35 @@ case "${host}" in
         case "${host}" in
             "bi") hosts=${DEFAULT_BI_HOSTS[*]};;
             "gpu") hosts=${DEFAULT_GPU_HOSTS[*]};;
-            "api") hosts=${DEFAULT_API_HOSTS[*]}; user="zhangjiguo";;
-            "upload") hosts=${DEFAULT_UPLOAD_HOSTS[*]}; user="zhangjiguo";;
+            "model") hosts=${DEFAULT_MODEL_HOSTS[*]};;
+            "batch") hosts=${DEFAULT_BATCH_HOSTS[*]};;
+            "api") hosts=($(python get_host_list.py api)); user="zhangjiguo";;
+            "train") hosts=($(python get_host_list.py train)); user="zhangjiguo";;
+            "web") hosts=($(python get_host_list.py web)); user="zhangjiguo";;
         esac
+
+        for host in ${hosts[*]}
+        do
+            remote_run
+        done
+        exit 0;;
+    "us")
+        user=zhangjiguo
+        jump="-J xyz@api-us.open.tuputech.com"
+        hosts=${DEFAULT_US_HOSTS[*]}
+        # hosts=(35 90 93 105 143 168 187)
 
         for num in ${hosts[*]}
         do
-            host="${host_prefix}${num}"
-            echo -e "${COLOR_GREEN}RUNNING${COLOR_DEFAULT}: $host"
-            ssh -At ${jump} ${user}@${host} "${commands}"
-            echo -e "${COLOR_GREEN}FINISHED${COLOR_DEFAULT}: $host\n"
+            host="10.0.3.${num}"
+            remote_run
         done
         exit 0;;
     *)
         if [ -z "${commands}" ]; then
             ssh -A ${jump} ${user}@${host}
         else
-            ssh -At ${jump} ${user}@${host} "${commands}"
+            remote_run
         fi
         exit 0;;
 esac
