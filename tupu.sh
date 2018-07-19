@@ -76,7 +76,7 @@ done
 
 function remote_run()
 {
-    if [[ ${#host} -lt 3 ]]; then
+    if [[ ${#host} -le 3 ]]; then
         host=${DEFAULT_HOST_PREFIX}${host}
     fi
     echo -e "${COLOR_GREEN}RUNNING${COLOR_DEFAULT}: $host"
