@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DEFAULT_GPU_HOSTS=$(seq 50 142)
-DEFAULT_BI_HOSTS=(59 88 127 129 131 132 142)
+DEFAULT_BI_HOSTS=(59 88 127 129 131 132 137 138 142)
 DEFAULT_WEB_HOSTS=(50 54)
 DEFAULT_MODEL_HOSTS=(208 209)
 DEFAULT_BATCH_HOSTS=(17 18)
@@ -87,7 +87,7 @@ function remote_run()
 }
 
 case "${host}" in
-    "bi" | "gpu" | "api" | "web" | "train" | "model" | "batch")
+    "bi" | "gpu" | "api" | "web" | "train" | "model" | "batch" | "internal")
         if [ -z "${commands}" ]; then
             echo -e "${COLOR_GREEN}ERROR${COLOR_DEFAULT}: commands option missing."
             exit 1
@@ -99,9 +99,10 @@ case "${host}" in
             "gpu") hosts=${DEFAULT_GPU_HOSTS[*]};;
             "model") hosts=${DEFAULT_MODEL_HOSTS[*]};;
             "batch") hosts=${DEFAULT_BATCH_HOSTS[*]};;
-            "api") hosts=($(python get_host_list.py api)); user="zhangjiguo";;
-            "train") hosts=($(python get_host_list.py train)); user="zhangjiguo";;
-            "web") hosts=($(python get_host_list.py web)); user="zhangjiguo";;
+            "api") hosts=$(curl -sS -X GET "http://172.25.52.7:8888/getGPUClients?type=api" | python -m json.tool | grep -oE '[0-9.]+'); user="zhangjiguo";;
+            "train") hosts=$(curl -sS -X GET "http://172.25.52.7:8888/getGPUClients?type=train" | python -m json.tool | grep -oE '[0-9.]+'); user="zhangjiguo";;
+            "web") hosts=$(curl -sS -X GET "http://172.25.52.7:8888/getGPUClients?type=web" | python -m json.tool | grep -oE '[0-9.]+'); user="zhangjiguo";;
+            "internal") hosts=$(curl -sS -X GET "http://172.25.52.6:7777/getGPUClients?type=api" | python -m json.tool | grep -oE '[0-9.]+'); user="zhangjiguo";;
         esac
 
         for host in ${hosts[*]}
