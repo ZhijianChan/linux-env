@@ -16,6 +16,7 @@ Usage:
     tp [-u <username> | -z] [-h <host>] [-c <commands>] [-J <jump_host> | -j] [options]
     tp <host> [-c <commands>]
     tp route
+    tp fixssh
     tp adduser [-u <username> -h <host> -k <public_key>]
     tp --help"
 
@@ -60,6 +61,13 @@ if [ "$1" == "route" ]; then
     sudo route add -net 172.25.52.0/24 192.168.1.250
     ssh-add -D
     ssh-add ${HOME}/.ssh/id_rsa
+    exit 0;
+fi
+
+if [ "$1" == "fixssh" ]; then
+    ssh_agent_file=$(find /tmp -path '/tmp/ssh-*' -name 'agent*' -user ${USER} 2>/dev/null)
+    rm -rf ~/.ssh/ssh_auth_sock
+    ln -s ${ssh_agent_file} ~/.ssh/ssh_auth_sock
     exit 0;
 fi
 
