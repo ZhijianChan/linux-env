@@ -12,7 +12,7 @@
     为了配置 `dir_colors` 需要装 `coreutils`。
 
     ```zsh
-    brew install coreutils
+    brew install coreutils gnu-getopt
     ```
 - 字体配置
 

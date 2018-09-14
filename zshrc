@@ -1,7 +1,5 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 export EDITOR=vim
 bindkey -M viins '^S' history-incremental-pattern-search-forward
@@ -12,44 +10,44 @@ alias ssh='ssh -A'
 
 if [ $(uname) = "Darwin" ]; then
     # for MaxOS
-    source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-    export PATH=${HOME}/.bin:/Applications/MacVim.app/Contents/bin:$PATH
-    export PATH=${PATH}:${HOME}/Library/Python/3.6/bin
-
-    if [ ! -z $(brew list | grep coreutils) ]; then
-        export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
-        eval `gdircolors -b $HOME/.dir_colors`
-
-        alias ls='ls -F --show-control-chars --color=auto'
-        alias ll='ls -al'
-        alias grep='grep --color'
-        alias egrep='egrep --color'
-        alias fgrep='fgrep --color'
-    fi
+    # source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    export PATH=${HOME}/Library/Python/3.6/bin:${PATH}
+    export PATH=/Applications/MacVim.app/Contents/bin:${PATH}
+    export PATH=/usr/local/opt/gnu-getopt/bin:${PATH}
+    export PATH=/usr/local/opt/coreutils/libexec/gnubin:${PATH}
+    # if [ ! -z $(brew list | grep coreutils) ]; then
+    # export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 else
-    source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # for Linux
+    export PATH=/usr/local/python-3.6.5/bin:${PATH}
+    export PATH=/usr/local/protobuf-3.5.2/bin:${PATH}
+    export PATH=/usr/local/vim-release/bin:$PATH
 
-    eval `dircolors -b $HOME/.dir_colors`
-
-    alias ls='ls -F --show-control-chars --color=auto'
-    alias ll='ls -al'
-    alias grep='grep --color'
-    alias egrep='egrep --color'
-    alias fgrep='fgrep --color'
-
-    export PATH=${HOME}/.bin:/usr/local/python-3.6.5/bin:/usr/local/protobuf-3.5.2/bin:/usr/local/vim-release/bin:$PATH
+    # auto reload ssh agent key in tmux
     if [ -S $SSH_AUTH_SOCK  ] && ! [ -h $SSH_AUTH_SOCK  ]; then
         ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
         export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
     fi
 fi
+
+alias ls='ls -F --show-control-chars --color=auto'
+alias ll='ls -al'
+alias grep='grep --color'
+alias egrep='egrep --color'
+alias fgrep='fgrep --color'
+
+export PATH=${HOME}/.bin:${PATH}
+
+eval `dircolors -b $HOME/.dir_colors`
+
+source ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # zsh-autosuggestions color
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=3'
 
 # Path to your oh-my-zsh installation.
 export ZSH=${HOME}/.oh-my-zsh
 export TERM=xterm-256color
+
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
@@ -97,7 +95,7 @@ ZSH_THEME="mytheme"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git tmux sudo yum osx autojump)
 
 source $ZSH/oh-my-zsh.sh
 

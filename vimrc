@@ -1,7 +1,7 @@
 set background=dark
 set encoding=utf-8
 set colorcolumn=100
-colorscheme molokai
+"colorscheme molokai
 colorscheme solarized
 "set term=xterm-256color
 set nocompatible
