@@ -2,7 +2,7 @@
 # coding: utf-8
 '''
 Usage:
-    install.py --name=<name> --email=<email>
+    install.py --name=<name> --email=<email> [--mac-terminal]
 '''
 
 import os

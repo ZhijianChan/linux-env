@@ -13,6 +13,10 @@
 
     ```zsh
     brew install coreutils gnu-getopt
+
+    # 校验是否已经安装
+    brew list | grep coreutils gnu-getopt
+    brew --prefix coreutils gnu-getopt
     ```
 - 字体配置
 

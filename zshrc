@@ -8,14 +8,18 @@ bindkey -M viins '^R' history-incremental-pattern-search-backward
 alias rsync='rsync -rzvaP'
 alias ssh='ssh -A'
 
+alias ls='ls -F --show-control-chars --color=auto'
+alias ll='ls -al'
+alias grep='grep --color'
+alias egrep='egrep --color'
+alias fgrep='fgrep --color'
+
 if [ $(uname) = "Darwin" ]; then
     # for MaxOS
-    # source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     export PATH=${HOME}/Library/Python/3.6/bin:${PATH}
     export PATH=/Applications/MacVim.app/Contents/bin:${PATH}
     export PATH=/usr/local/opt/gnu-getopt/bin:${PATH}
     export PATH=/usr/local/opt/coreutils/libexec/gnubin:${PATH}
-    # if [ ! -z $(brew list | grep coreutils) ]; then
     # export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 else
     # for Linux
@@ -29,12 +33,6 @@ else
         export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
     fi
 fi
-
-alias ls='ls -F --show-control-chars --color=auto'
-alias ll='ls -al'
-alias grep='grep --color'
-alias egrep='egrep --color'
-alias fgrep='fgrep --color'
 
 export PATH=${HOME}/.bin:${PATH}
 

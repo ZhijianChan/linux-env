@@ -79,6 +79,7 @@ for num in {1..255}
 do
     if [ "${host}" == "${num}" ]; then
         host="${DEFAULT_HOST_PREFIX}${host}"
+        break
     fi
 done
 
