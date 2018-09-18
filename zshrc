@@ -21,6 +21,7 @@ if [ $(uname) = "Darwin" ]; then
     export PATH=/usr/local/opt/coreutils/libexec/gnubin:${PATH}
     # export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 else
+    alias docker="sudo docker"
     # for Linux
     export PATH=/usr/local/python-3.6.5/bin:${PATH}
     export PATH=/usr/local/protobuf-3.5.2/bin:${PATH}
