@@ -33,7 +33,7 @@ else
     fi
 fi
 
-export PATH=${HOME}/.zshenv/bin:${PATH}
+export PATH=${HOME}/.zshenv/bin:${HOME}/.local/bin:${PATH}
 
 eval `dircolors -b $HOME/.dir_colors`
 
