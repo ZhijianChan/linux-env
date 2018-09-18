@@ -8,6 +8,7 @@ DEFAULT_BATCH_HOSTS=(17 18)
 DEFAULT_API_HOSTS=(58 60 69 71 72 73 74 75 76 77 78 79 83 84 85 102 134 135 136)
 DEFAULT_US_HOSTS=(4 35 80 90 93 105 139 143 168 187)
 DEFAULT_TRAIN_HOSTS=(61 62 63 81 82)
+DEFAULT_AEROSPIKE_HOSTS=$(seq 246 252)
 
 DEFAULT_HOST_PREFIX="172.25.52."
 
@@ -123,11 +124,18 @@ case "${host}" in
         user=zhangjiguo
         jump="-J xyz@api-us.open.tuputech.com"
         hosts=${DEFAULT_US_HOSTS[*]}
-        # hosts=(35 90 93 105 143 168 187)
 
         for num in ${hosts[*]}
         do
             host="10.0.3.${num}"
+            remote_run
+        done
+        exit 0;;
+    "ac")
+        hosts=${DEFAULT_AEROSPIKE_HOSTS[*]}
+
+        for host in ${hosts[*]}
+        do
             remote_run
         done
         exit 0;;

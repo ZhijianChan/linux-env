@@ -16,7 +16,6 @@ alias fgrep='fgrep --color'
 
 if [ $(uname) = "Darwin" ]; then
     # for MaxOS
-    export PATH=${HOME}/Library/Python/3.6/bin:${PATH}
     export PATH=/Applications/MacVim.app/Contents/bin:${PATH}
     export PATH=/usr/local/opt/gnu-getopt/bin:${PATH}
     export PATH=/usr/local/opt/coreutils/libexec/gnubin:${PATH}
@@ -34,7 +33,7 @@ else
     fi
 fi
 
-export PATH=${HOME}/.bin:${PATH}
+export PATH=${HOME}/.zshenv/bin:${PATH}
 
 eval `dircolors -b $HOME/.dir_colors`
 
