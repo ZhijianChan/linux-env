@@ -80,7 +80,14 @@ Plugin 'Lokaltog/vim-powerline'
 " 状态栏
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+" 代码模板
+" Plugin 'aperezdc/vim-template'
+" 代码折叠
 Plugin 'tmhedberg/SimpylFold'
+" Track the engine.
+Plugin 'SirVer/ultisnips'
+" Snippets are separated from the engine. Add this if you want them:
+Plugin 'honza/vim-snippets'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
