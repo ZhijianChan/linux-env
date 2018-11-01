@@ -183,3 +183,8 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 highlight Folded ctermfg=37 ctermbg=8
 " 默认打开所有折叠
 autocmd BufReadPost,FileReadPost *.py :set foldlevel=9
+
+" UltiSnips 自定义代码模板，提高写代码效率
+let g:UltiSnipsExpandTrigger="jj"
+let g:UltiSnipsJumpForwardTrigger="<c-n>"
+let g:UltiSnipsJumpBackwardTrigger="<c-u>"
