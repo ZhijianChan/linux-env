@@ -1,5 +1,10 @@
 priority -40
 
+snippet docopt "docopt command args" b
+from docopt import docopt
+cmd_args = docopt(__doc__, version='1.0')
+endsnippet
+
 snippet cd "current directory" b
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 endsnippet
