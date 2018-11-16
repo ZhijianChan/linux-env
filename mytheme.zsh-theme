@@ -84,9 +84,9 @@ prompt_context() {
       prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}%{$fg_no_bold[green]%}%D{%H:%M:%S}"
     fi
   else
-    host_ip=$(/usr/sbin/ip addr | grep -oE "172.25.5[2|8].[0-9]{1,3}|172.26.3.[0-9]{1,3}" | grep -v 255 | head -n1 | awk -F'.' '{print $4}')
+    host_ip=$(/usr/sbin/ip addr | grep -oE "172.25.5[2|8].[0-9]{1,3}|172.26.[2|3].[0-9]{1,3}" | grep -v 255 | head -n1)
     if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-      prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}[$host_ip] %{$fg_no_bold[green]%}%D{%H:%M:%S}"
+      prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}$host_ip%{$fg_no_bold[green]%}"
     fi
   fi
 }
@@ -233,4 +233,4 @@ build_prompt() {
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
-RPROMPT='%{$fg[green]%}%n:%!%{$reset_color%}'
+RPROMPT='%{$fg[green]%}%D{%Y-%m-%d %H:%M:%S}%{$reset_color%}'
