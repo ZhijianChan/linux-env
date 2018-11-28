@@ -1,16 +1,20 @@
 priority -40
 
-snippet docopt "docopt command args" b
-from docopt import docopt
-cmd_args = docopt(__doc__, version='1.0')
+snippet path "from pathlib import Path" b
+from pathlib import Path
 endsnippet
 
 snippet cd "current directory" b
-cur_dir = os.path.dirname(os.path.abspath(__file__))
+cur_dir = Path(__file__).resolve().parent
 endsnippet
 
 snippet wd "working directory" b
-working_dir = os.path.dirname(os.path.abspath(__file__))
+working_dir = Path(__file__).resolve().parent
+endsnippet
+
+snippet docopt "docopt command args" b
+from docopt import docopt
+cmd_args = docopt(__doc__, version='1.0')
 endsnippet
 
 snippet access "Access headers" b
