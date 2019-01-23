@@ -127,6 +127,8 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 1
 
 " ===== Plugin 'Yggdroot/indentLine' =====
+" JSON 文件自动隐藏引号
+autocmd Filetype json let g:indentLine_enabled = 0
 let g:indentLine_char = "┆"
 let g:indentLine_enabled = 1
 "let g:autopep8_disable_show_diff=1
