@@ -4,6 +4,7 @@
 Usage:
     install.py [--name=<name>] [--email=<email>] [--python-path=<python_path>]
 '''
+
 import os
 import sh
 import sys
@@ -81,7 +82,7 @@ class Setup(object):
         sh.mkdir('-p', hpath('.config'), **SHARG)
         sh.cp(wpath('python/flake8'), hpath('.config/flake8'), **SHARG)
 
-        sh.pip('install', 'flake8', 'autopep8', '--user', **SHARG)
+        sh.pip('install', 'flake8', 'autopep8', 'pyyaml', '--user', **SHARG)
 
     def _ssh_environment(self):
         sh.mkdir('-p', hpath('.ssh'), **SHARG)
@@ -102,59 +103,70 @@ class Setup(object):
         sh.cp(wpath('dircolors/dircolors.256dark'), hpath('.dir_colors'), **SHARG)
 
     def _zsh_environment(self):
+        template = self.temp_env.get_template(wpath('zsh/zshrc.template'))
+        with open(hpath('.zshrc'), 'w') as zshrc:
+            zshrc.write(template.render(platform=sys.platform, extra_paths=self._get_extra_paths()))
+        # sh.cp(wpath('zsh/zshrc'), hpath('.zshrc'), **SHARG)
+
         if os.path.isdir(hpath('.oh-my-zsh')):
             sh.zsh(hpath('.oh-my-zsh/tools/upgrade.sh'), **SHARG)
         else:
             install_script = 'https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh'
             sh.zsh('-c', '$(wget {} -O -)'.format(install_script), **SHARG)
 
+        sh.cp(wpath('zsh/mytheme.zsh-theme'), hpath('.oh-my-zsh/themes/mytheme.zsh-theme'), **SHARG)
+
         # zsh-autosuggestions
         zsh_autosuggestions_path = hpath('.oh-my-zsh/custom/plugins/zsh-autosuggestions')
         if os.path.isdir(zsh_autosuggestions_path):
-            sh.git('pull', _cwd=zsh_autosuggestions_path, **SHARG)
+            os.chdir(zsh_autosuggestions_path)
+            sh.git('pull', **SHARG)
+            os.chdir(working_dir)
         else:
             sh.git('clone', 'https://github.com/zsh-users/zsh-autosuggestions',
                    zsh_autosuggestions_path, **SHARG)
 
-        template = self.temp_env.get_template(wpath('zsh/zshrc.template'))
-        with open(hpath('.zshrc'), 'w') as zshrc:
-            zshrc.write(template.render(platform=sys.platform, extra_paths=self._get_extra_paths()))
-        # sh.cp(wpath('zsh/zshrc'), hpath('.zshrc'), **SHARG)
-
-        sh.cp(wpath('zsh/mytheme.zsh-theme'), hpath('.oh-my-zsh/themes/mytheme.zsh-theme'), **SHARG)
-
     def _vim_environment(self):
+        sh.mkdir('-p', hpath('.vim/colors'), **SHARG)
+        sh.cp(wpath('vim/molokai.vim'), hpath('.vim/colors/molokai.vim'), **SHARG)
+        sh.cp(wpath('vim/solarized.vim'), hpath('.vim/colors/solarized.vim'), **SHARG)
+
         vundle_dir = hpath('.vim/bundle/Vundle.vim')
         if os.path.isdir(vundle_dir):
-            sh.git('pull', _cwd=vundle_dir, **SHARG)
+            os.chdir(vundle_dir)
+            sh.git('pull', **SHARG)
+            os.chdir(working_dir)
         else:
             sh.git('clone', 'https://github.com/VundleVim/Vundle.vim.git', vundle_dir, **SHARG)
-
-        ycm_dir = hpath('.vim/bundle/YouCompleteMe')
-        if not os.path.isdir(ycm_dir):
-            sh.git('clone', 'https://github.com/Valloric/YouCompleteMe.git', ycm_dir, **SHARG)
-        if not os.path.isfile(hpath('.vim/bundle/YouCompleteMe/third_party/ycmd/ycm_core.so')):
-            sh.git('submodule', 'update', '--init', '--recursive', _cwd=ycm_dir, **SHARG)
-            sh.python('install.py', '--clang-completer', _cwd=ycm_dir, **SHARG)
 
         template = self.temp_env.get_template(wpath('vim/vimrc.template'))
         with open(hpath('.vimrc'), 'w') as vimrc:
             vimrc.write(template.render(python_path=self.python_path))
         # sh.cp(wpath('vim/vimrc'), hpath('.vimrc'), **SHARG)
 
-        sh.mkdir('-p', hpath('.vim/colors'), **SHARG)
-        sh.cp(wpath('vim/molokai.vim'), hpath('.vim/colors/molokai.vim'), **SHARG)
-        sh.cp(wpath('vim/solarized.vim'), hpath('.vim/colors/solarized.vim'), **SHARG)
+        sh.vim('+PluginInstall', '+qall', **SHARG)
+
+        ycm_dir = hpath('.vim/bundle/YouCompleteMe')
+        if not os.path.isdir(ycm_dir):
+            sh.git('clone', 'https://github.com/Valloric/YouCompleteMe.git', ycm_dir, **SHARG)
+        if not os.path.isfile(hpath('.vim/bundle/YouCompleteMe/third_party/ycmd/ycm_core.so')):
+            os.chdir(ycm_dir)
+            sh.git('submodule', 'update', '--init', '--recursive', **SHARG)
+            sh.zsh('install.sh', '--clang-completer', **SHARG)
+            os.chdir(working_dir)
 
     def start(self):
         # sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), _fg=True)
         for module in ['zsh', 'vim', 'git', 'ssh', 'tmux', 'python', 'clang', 'dircolors']:
+            print('{0:-^{1}}'.format(' {} environment '.format(module).upper(),
+                                     os.get_terminal_size().columns))
             getattr(self, '_{}_environment'.format(module))()
 
 
 if __name__ == "__main__":
     from docopt import docopt
-    cmd_args = docopt(__doc__, version="zshenv v1.0")
+    cmd_args = docopt(__doc__, version="v1.0")
+    working_dir = os.path.dirname(os.path.abspath(__file__))
 
     setup = Setup()
     setup.start()
