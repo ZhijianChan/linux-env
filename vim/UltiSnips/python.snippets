@@ -35,6 +35,7 @@ snippet sanic_template "Sanic server template" b
 '''
 Usage:
     ${1}
+
 Option:
     ${2}
 '''
@@ -47,22 +48,6 @@ from sanic import response, Sanic
 app = Sanic(__name__, configure_logging=False)
 
 
-def handler_catch_exception():
-    from functools import wraps
-
-    def decorator(function):
-        @wraps(function)
-        async def decorated_function(request, *args, **kwargs):
-            try:
-                return await function(request, *args, **kwargs)
-            except Exception as ex:
-                logging.error('[%s_exception]' % function.__name__, exc_info=True)
-                result = {'code': ex.code if hasattr(ex, 'code') else 500, 'message': str(ex.args)}
-            return response.json(result)
-        return decorated_function
-    return decorator
-
-
 @app.get(r'/')
 async def index_handler(request):
     return response.redirect('/api/doc')
@@ -70,15 +55,16 @@ async def index_handler(request):
 
 @app.middleware('request')
 async def modify_request(request):
-    request['start_time'] = time.time()
+    request['__START_TIME__'] = time.time()
 
 
 @app.middleware('response')
 async def modify_response(request, response):
     status = response.status if response else None
-    spend_time = round((time.time() - request['start_time']) * 1000)
+    spend_time = round((time.time() - request['__START_TIME__']) * 1000)
+    ip = request.remote_addr if request.remote_addr else request.ip
     logging.info('Access method: %s uri: %s status: %s ip: %s time: %sms'
-                 % (request.method, request.path, status, request.ip, spend_time))
+                 % (request.method, request.path, status, ip, spend_time))
 
 
 @app.listener('before_server_start')
@@ -96,57 +82,32 @@ if __name__ == '__main__':
 
     import uvloop
     asyncio.set_event_loop(uvloop.new_event_loop())
-    loop = asyncio.get_event_loop()
-    server = app.create_server(host='0.0.0.0', access_log=False, port=cmd_args['--port'],
-                               debug=cmd_args['--debug'])
-    asyncio.ensure_future(server)
 
-    import signal
-    signal.signal(signal.SIGINT, lambda s, f: loop.stop())
-    signal.signal(signal.SIGTERM, lambda s, f: loop.stop())
-    try:
-        loop.run_forever()
-    except Exception:
-        loop.stop()
+    asyncio.set_event_loop(uvloop.new_event_loop())
+    app.run(host='0.0.0.0', port=int(cmd_args['--port']), access_log=False)
     logging.info('[server_exit]')
-endsnippet
-
-snippet sanic_hc "Sanic handler catch exception"
-def handler_catch_exception():
-    from functools import wraps
-
-    def decorator(function):
-        @wraps(function)
-        async def decorated_function(request, *args, **kwargs):
-            try:
-                return await function(request, *args, **kwargs)
-            except Exception as ex:
-                logging.error('[%s_exception]' % function.__name__, exc_info=True)
-                result = {'code': ex.code if hasattr(ex, 'code') else 500, 'message': str(ex.args)}
-            return response.json(result)
-        return decorated_function
-    return decorator
 endsnippet
 
 snippet sanic_br "Sanic before request and response function" b
 @app.middleware('request')
 async def modify_request(request):
-    request['start_time'] = time.time()
+    request['__START_TIME__'] = time.time()
 
 
 @app.middleware('response')
 async def modify_response(request, response):
     status = response.status if response else None
-    spend_time = round((time.time() - request['start_time']) * 1000)
+    spend_time = round((time.time() - request['__START_TIME__']) * 1000)
+    ip = request.remote_addr if request.remote_addr else request.ip
     logging.info('Access method: %s uri: %s status: %s ip: %s time: %sms'
-                 % (request.method, request.path, status, request.ip, spend_time))
+                 % (request.method, request.path, status, ip, spend_time))
 endsnippet
 
 snippet sanic_bs "Sanic before server start running function" b
 @app.listener('before_server_start')
 async def before_server_start(app, loop):
     from swagger_ui import sanic_api_doc
-    sanic_api_doc(app, config_path=${3:SWAGGER_CONFIG_PATH}, title='api_doc')
+    sanic_api_doc(app, config_path=${1:SWAGGER_CONFIG_PATH}, title='api_doc')
     logging.info('[server_listening] pid: %s port: %s' % (os.getpid(), cmd_args['--port']))
 endsnippet
 

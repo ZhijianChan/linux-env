@@ -131,6 +131,8 @@ class Setup(object):
         sh.cp(wpath('vim/molokai.vim'), hpath('.vim/colors/molokai.vim'), **SHARG)
         sh.cp(wpath('vim/solarized.vim'), hpath('.vim/colors/solarized.vim'), **SHARG)
 
+        sh.rsync('-rzvaP', wpath('vim/UltiSnips'), hpath('.vim'), **SHARG)
+
         vundle_dir = hpath('.vim/bundle/Vundle.vim')
         if os.path.isdir(vundle_dir):
             os.chdir(vundle_dir)
