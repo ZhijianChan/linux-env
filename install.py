@@ -44,10 +44,12 @@ class Setup(object):
         python_paths = [str(sh.which('python')), str(sh.which('python3')), str(sh.which('python2'))]
         if os.path.isfile('/usr/local/python-3.6.5/bin/python'):
             python_paths.append('/usr/local/python-3.6.5/bin/python')
-        out = sh.find('/usr/local/Cellar/python', '-regex', '.*/bin/python3[0-9.]*$', '-type', 'f',
-                      _piped=True)
-        out = sh.sort(out, _piped=True)
-        python_paths.append(sh.head(out, '-n1').strip())
+
+        if os.path.isdir('/usr/local/Cellar/python'):
+            out = sh.find('/usr/local/Cellar/python', '-regex', '.*/bin/python3[0-9.]*$',
+                          '-type', 'f', _piped=True)
+            out = sh.sort(out, _piped=True)
+            python_paths.append(sh.head(out, '-n1').strip())
 
         useable_pythons = []
         python_paths_set = set()

@@ -14,6 +14,8 @@ Options:
 
 import os
 import sh
+import pwd
+import glob
 import yaml
 
 
@@ -27,9 +29,20 @@ class MyCommand(object):
         pass
 
     def fixssh(self):
-        agent_file = sh.find('/tmp', '-path', '/tmp/ssh-*', '-name', 'agent*', '-user', '${USER}',
-                             _env=os.environ, _fg=True)
-        print(agent_file)
+        for path in glob.glob('/tmp/ssh-*/agent*', recursive=True):
+            if os.stat(path).st_uid == pwd.getpwnam(os.environ['USER']).pw_uid:
+                link_file = os.path.expanduser('~/.ssh/ssh_auth_sock')
+                sh.rm('-rf', link_file, _fg=True)
+                sh.ln('-s', path, link_file, _fg=True)
+                sh.Command('ssh-add')('-l', _fg=True)
+                return
+        print('not found ssh agent tmp file, please login again.')
+
+    def route(self):
+        pass
+
+    def remote_run_command(self, host, command):
+        pass
 
 
 if __name__ == "__main__":
@@ -39,4 +52,7 @@ if __name__ == "__main__":
     working_dir = os.path.dirname(os.path.abspath(__file__))
 
     command = MyCommand()
-    command.fixssh()
+    if cmd_args['route']:
+        command.route()
+    elif cmd_args['fixssh']:
+        command.fixssh()
