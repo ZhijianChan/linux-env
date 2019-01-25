@@ -25,12 +25,8 @@ class Setup(object):
     def __init__(self):
         self.user_name = cmd_args['--name'] or input('name: ')
         self.user_email = cmd_args['--email'] or input('email: ')
-        self.python_path = cmd_args['--python-path'] or self._get_python_path()
         self.temp_env = Environment(loader=FunctionLoader(self._load_template))
-
-    @property
-    def os(self):
-        return sh.Command('uname')().strip()
+        self.python_path, self.python_version = cmd_args['--python-path'] or self._get_python_path()
 
     def _load_template(self, path):
         with open(path) as temp:
@@ -75,7 +71,11 @@ class Setup(object):
             if num < 0 or num >= len(useable_pythons):
                 error = 'error: invalid input, try again!! '
                 continue
-            return useable_pythons[num][0]
+            return useable_pythons[num]
+
+    def _get_extra_paths(self):
+        extra_paths = []
+        return extra_paths
 
     def _python_environment(self):
         sh.mkdir('-p', hpath('.config'), **SHARG)
@@ -118,7 +118,7 @@ class Setup(object):
 
         template = self.temp_env.get_template(wpath('zsh/zshrc.template'))
         with open(hpath('.zshrc'), 'w') as zshrc:
-            zshrc.write(template.render(os=self.os, python_dir=os.path.dirname(self.python_path)))
+            zshrc.write(template.render(platform=sys.platform, extra_paths=self._get_extra_paths()))
         # sh.cp(wpath('zsh/zshrc'), hpath('.zshrc'), **SHARG)
 
         sh.cp(wpath('zsh/mytheme.zsh-theme'), hpath('.oh-my-zsh/themes/mytheme.zsh-theme'), **SHARG)
@@ -147,6 +147,7 @@ class Setup(object):
         sh.cp(wpath('vim/solarized.vim'), hpath('.vim/colors/solarized.vim'), **SHARG)
 
     def start(self):
+        # sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), _fg=True)
         for module in ['zsh', 'vim', 'git', 'ssh', 'tmux', 'python', 'clang', 'dircolors']:
             getattr(self, '_{}_environment'.format(module))()
 
