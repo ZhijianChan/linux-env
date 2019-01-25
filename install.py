@@ -1,123 +1,157 @@
-#!/usr/local/python-3.6.5/bin/python3.6
+#! env python
 # coding: utf-8
 '''
 Usage:
-    install.py --name=<name> --email=<email> [--mac-terminal]
+    install.py [--name=<name>] [--email=<email>] [--python-path=<python_path>]
 '''
-
 import os
-import subprocess
+import sh
+import sys
+from jinja2 import Environment, FunctionLoader
 
-COLOR_RED = '\033[31m'
-COLOR_GREEN = '\033[32m'
-COLOR_DEFAULT = '\033[0m'
-
-HOME = os.path.expanduser('~')
-WORKING_DIR = os.path.dirname(os.path.dirname(__file__))
+SHARG = {'_fg': True}
 
 
-def run(cmd, cwd=None):
-    print('%srun:%s %s' % (COLOR_GREEN, COLOR_DEFAULT, cmd))
-    process = subprocess.Popen(cmd.split(), env=os.environ, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, cwd=cwd)
-    while process.returncode is None:
-        line = process.stdout.readline()
-        if len(line) == 0:
-            break
-        print(line.rstrip().decode('utf-8'))
-    process.communicate()
-    assert process.returncode == 0
+def hpath(path):
+    return os.path.join(os.path.expanduser('~'), path)
 
 
-def copy(src, path, is_dir=False):
-    if is_dir:
-        run('cp -rf %s %s' % (src, path))
-    else:
-        run('cp %s %s' % (src, path))
+def wpath(path):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), path)
 
 
-def check_oh_my_zsh():
-    if not os.path.isdir(os.path.expanduser('~/.oh-my-zsh')):
-        run('./oh_my_zsh.sh')
-    else:
-        run('cd %s/.oh-my-zsh && git checkout .' % HOME)
-        run('sh %s/.oh-my-zsh/tools/upgrade.sh' % HOME)
+class Setup(object):
 
-    copy(os.path.join(WORKING_DIR, 'mytheme.zsh-theme'),
-         os.path.join(HOME, '.oh-my-zsh/themes/mytheme.zsh-theme'))
-    copy(os.path.join(WORKING_DIR, 'zshrc'), os.path.join(HOME, '.zshrc'))
+    def __init__(self):
+        self.user_name = cmd_args['--name'] or input('name: ')
+        self.user_email = cmd_args['--email'] or input('email: ')
+        self.python_path = cmd_args['--python-path'] or self._get_python_path()
+        self.temp_env = Environment(loader=FunctionLoader(self._load_template))
 
-    # zsh-autosuggestions
-    url = 'https://github.com/zsh-users/zsh-autosuggestions'
-    path = os.path.expanduser('~/.oh-my-zsh/custom/plugins/zsh-autosuggestions')
-    if not os.path.isdir(path):
-        run('git clone %s %s' % (url, path), cwd=HOME)
+    @property
+    def os(self):
+        return sh.Command('uname')().strip()
+
+    def _load_template(self, path):
+        with open(path) as temp:
+            return temp.read()
+
+    def _get_python_version(self, python_path):
+        version = sh.Command(python_path)('-V', _err_to_out=True).strip()
+        return version.split()[1]
+
+    def _get_python_path(self):
+        python_paths = [str(sh.which('python')), str(sh.which('python3')), str(sh.which('python2'))]
+        if os.path.isfile('/usr/local/python-3.6.5/bin/python'):
+            python_paths.append('/usr/local/python-3.6.5/bin/python')
+        out = sh.find('/usr/local/Cellar/python', '-regex', '.*/bin/python3[0-9.]*$', '-type', 'f',
+                      _piped=True)
+        out = sh.sort(out, _piped=True)
+        python_paths.append(sh.head(out, '-n1').strip())
+
+        useable_pythons = []
+        python_paths_set = set()
+        for python_path in python_paths:
+            if python_path in python_paths_set:
+                continue
+            python_paths_set.add(python_path)
+            if os.path.realpath(python_path) in python_paths_set:
+                continue
+            python_paths_set.add(os.path.realpath(python_path))
+            useable_pythons.append((python_path, self._get_python_version(python_path)))
+
+        if len(useable_pythons) == 0:
+            print('Not found python!!')
+            sys.exit(1)
+
+        error = ''
+        while True:
+            message = '{}\n{}select python path [{}]: '.format(
+                '\n'.join(['{}. {} (v{})'.format(i, *e) for i, e in enumerate(useable_pythons)]),
+                error, ','.join([str(i) for i in range(len(useable_pythons))]))
+            num = int(input(message))
+            if num < 0 or num >= len(useable_pythons):
+                error = 'error: invalid input, try again!! '
+                continue
+            return useable_pythons[num][0]
+
+    def _python_environment(self):
+        sh.mkdir('-p', hpath('.config'), **SHARG)
+        sh.cp(wpath('python/flake8'), hpath('.config/flake8'), **SHARG)
+
+        sh.pip('install', 'flake8', 'autopep8', '--user', **SHARG)
+
+    def _ssh_environment(self):
+        sh.mkdir('-p', hpath('.ssh'), **SHARG)
+        sh.cp(wpath('ssh/config'), hpath('.ssh/config'), **SHARG)
+
+    def _git_environment(self):
+        sh.cp(wpath('git/gitconfig'), hpath('.gitconfig'), **SHARG)
+        sh.git('config', '--global', 'user.name', self.user_name, **SHARG)
+        sh.git('config', '--global', 'user.email', self.user_email, **SHARG)
+
+    def _tmux_environment(self):
+        sh.cp(wpath('tmux/tmux.conf'), hpath('.tmux.conf'), **SHARG)
+
+    def _clang_environment(self):
+        sh.cp(wpath('clang/clang-format'), hpath('.clang-format'), **SHARG)
+
+    def _dircolors_environment(self):
+        sh.cp(wpath('dircolors/dircolors.256dark'), hpath('.dir_colors'), **SHARG)
+
+    def _zsh_environment(self):
+        if os.path.isdir(hpath('.oh-my-zsh')):
+            sh.zsh(hpath('.oh-my-zsh/tools/upgrade.sh'), **SHARG)
+        else:
+            install_script = 'https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh'
+            sh.zsh('-c', '$(wget {} -O -)'.format(install_script), **SHARG)
+
+        # zsh-autosuggestions
+        zsh_autosuggestions_path = hpath('.oh-my-zsh/custom/plugins/zsh-autosuggestions')
+        if os.path.isdir(zsh_autosuggestions_path):
+            sh.git('pull', _cwd=zsh_autosuggestions_path, **SHARG)
+        else:
+            sh.git('clone', 'https://github.com/zsh-users/zsh-autosuggestions',
+                   zsh_autosuggestions_path, **SHARG)
+
+        template = self.temp_env.get_template(wpath('zsh/zshrc.template'))
+        with open(hpath('.zshrc'), 'w') as zshrc:
+            zshrc.write(template.render(os=self.os, python_dir=os.path.dirname(self.python_path)))
+        # sh.cp(wpath('zsh/zshrc'), hpath('.zshrc'), **SHARG)
+
+        sh.cp(wpath('zsh/mytheme.zsh-theme'), hpath('.oh-my-zsh/themes/mytheme.zsh-theme'), **SHARG)
+
+    def _vim_environment(self):
+        vundle_dir = hpath('.vim/bundle/Vundle.vim')
+        if os.path.isdir(vundle_dir):
+            sh.git('pull', _cwd=vundle_dir, **SHARG)
+        else:
+            sh.git('clone', 'https://github.com/VundleVim/Vundle.vim.git', vundle_dir, **SHARG)
+
+        ycm_dir = hpath('.vim/bundle/YouCompleteMe')
+        if not os.path.isdir(ycm_dir):
+            sh.git('clone', 'https://github.com/Valloric/YouCompleteMe.git', ycm_dir, **SHARG)
+        if not os.path.isfile(hpath('.vim/bundle/YouCompleteMe/third_party/ycmd/ycm_core.so')):
+            sh.git('submodule', 'update', '--init', '--recursive', _cwd=ycm_dir, **SHARG)
+            sh.python('install.py', '--clang-completer', _cwd=ycm_dir, **SHARG)
+
+        template = self.temp_env.get_template(wpath('vim/vimrc.template'))
+        with open(hpath('.vimrc'), 'w') as vimrc:
+            vimrc.write(template.render(python_path=self.python_path))
+        # sh.cp(wpath('vim/vimrc'), hpath('.vimrc'), **SHARG)
+
+        sh.mkdir('-p', hpath('.vim/colors'), **SHARG)
+        sh.cp(wpath('vim/molokai.vim'), hpath('.vim/colors/molokai.vim'), **SHARG)
+        sh.cp(wpath('vim/solarized.vim'), hpath('.vim/colors/solarized.vim'), **SHARG)
+
+    def start(self):
+        for module in ['zsh', 'vim', 'git', 'ssh', 'tmux', 'python', 'clang', 'dircolors']:
+            getattr(self, '_{}_environment'.format(module))()
 
 
-def check_vim():
-    if not (os.path.isdir(os.path.expanduser('~/.vim')) and
-            os.path.isdir(os.path.expanduser('~/.vim/bundle/Vundle.vim'))):
-        run('git clone https://github.com/VundleVim/Vundle.vim.git '
-            '%s/.vim/bundle/Vundle.vim' % HOME)
-
-    if not os.path.isdir(os.path.expanduser('~/.vim/colors')):
-        run('mkdir %s/.vim/colors' % HOME)
-    copy(os.path.join(WORKING_DIR, 'solarized.vim'),
-         os.path.join(HOME, '.vim/colors/solarized.vim'))
-    copy(os.path.join(WORKING_DIR, 'molokai.vim'), os.path.join(HOME, '.vim/colors/molokai.vim'))
-
-    if not os.path.isdir(os.path.expanduser('~/.vim/bundle/YouCompleteMe')):
-        run('git clone https://github.com/Valloric/YouCompleteMe.git '
-            '%s/.vim/bundle/YouCompleteMe' % HOME)
-
-    ycm_core = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/ycm_core.so'
-    if not os.path.isfile(os.path.expanduser(ycm_core)):
-        ycm_dir = '%s/.vim/bundle/YouCompleteMe' % HOME
-        run(cmd='git submodule update --init --recursive', cwd=ycm_dir)
-        run(cmd='./install.py --clang-completer', cwd=ycm_dir)
-
-
-def check_configs():
-    configs = [('gitconfig', '.gitconfig'), ('tmux.conf', '.tmux.conf'), ('vimrc', '.vimrc'),
-               ('clang-format', '.clang-format'), ('dircolors.256dark', '.dir_colors'),
-               ('zshrc', '.zshrc')]
-    if not os.path.isdir(os.path.expanduser('~/.config')):
-        os.makedirs(os.path.expanduser('~/.config'))
-    copy(os.path.join(WORKING_DIR, 'flake8'), os.path.join(HOME, '.config/flake8'))
-    for src, path in configs:
-        copy(os.path.join(WORKING_DIR, src), os.path.join(HOME, path))
-    run(cmd='git config --global user.name %s' % cmd_args['--name'], cwd=HOME)
-    run(cmd='git config --global user.email %s' % cmd_args['--email'], cwd=HOME)
-
-
-def check_dependency():
-    print('====== check dependency ======')
-    fmt_yes = '%-*s' + '[%syes%s]' % (COLOR_GREEN, COLOR_DEFAULT)
-    fmt_no = '%-*s' + '[%sno%s]' % (COLOR_RED, COLOR_DEFAULT)
-    try:
-        import supervisor
-        print(fmt_yes % (25, 'supervisor(%s)' % supervisor.__version__))
-    except ImportError:
-        print(fmt_no % (25, 'supervisor'))
-
-    try:
-        import flake8
-        print(fmt_yes % (25, 'flake8(%s)' % flake8.__version__))
-    except ImportError:
-        print(fmt_no % (25, 'flake8'))
-
-    try:
-        import autopep8
-        print(fmt_yes % (25, 'autopep8(%s)' % autopep8.__version__))
-    except ImportError:
-        print(fmt_no % (25, 'autopep8'))
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     from docopt import docopt
     cmd_args = docopt(__doc__, version="zshenv v1.0")
-    check_oh_my_zsh()
-    check_vim()
-    check_configs()
-    check_dependency()
-    print('%s[Finished]%s' % (COLOR_GREEN, COLOR_DEFAULT))
+
+    setup = Setup()
+    setup.start()

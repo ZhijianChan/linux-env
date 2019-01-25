@@ -37,8 +37,11 @@
 - 安装 `oh-my-zsh`、`tmux`、`zsh` 等基本环境
 
     ```zsh
+    # 安装依赖
+    pip install sh docopt jinja2 --user
+
     cd ~/.zshenv
-    python install.py --name=<xxx> --email=<xxx@tuputech.com>
+    python install.py --name=<xxx> --email=<xxx@tuputech.com> --python-path=</xxx/python>
     ```
 
 - 安装或更新 `vim` 插件

@@ -1,12 +1,13 @@
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+export TIME_STYLE='+%Y-%m-%d %H:%M:%S'
 
 export EDITOR=vim
 bindkey -M viins '^S' history-incremental-pattern-search-forward
 bindkey -M viins '^R' history-incremental-pattern-search-backward
 
-alias rsync='rsync -rzvaP'
 alias ssh='ssh -A'
+alias rsync='rsync -rzvaP'
 
 alias ls='ls -F --show-control-chars --color=auto'
 alias ll='ls -al'
@@ -20,9 +21,13 @@ if [ $(uname) = "Darwin" ]; then
     export PATH=/usr/local/opt/gnu-getopt/bin:${PATH}
     export PATH=/usr/local/opt/coreutils/libexec/gnubin:${PATH}
     # export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+    PYTHON_PATH=$(find /usr/local/Cellar/python -regex '.*/bin/python3[0-9.]*$' -type f | sort | tail -n1)
+    PYTHON_BIN_DIR=${PYTHON_PATH%/*}
+    export PATH=${PYTHON_BIN_DIR}:${PATH}
 else
-    alias docker="sudo docker"
     # for Linux
+    alias docker="sudo docker"
+
     export PATH=/usr/local/python-3.6.5/bin:${PATH}
     export PATH=/usr/local/protobuf-3.5.2/bin:${PATH}
     export PATH=/usr/local/vim-release/bin:$PATH

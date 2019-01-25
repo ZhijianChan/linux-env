@@ -1,16 +1,16 @@
 #!/bin/bash
 
 DEFAULT_GPU_HOSTS=$(seq 55 164)
-DEFAULT_BI_HOSTS=(88 120 127 129 131 132 142)
+DEFAULT_BI_HOSTS=(71 72 73 74 75 76 77 117)
+DEFAULT_AEROSPIKE_HOSTS=(66 67 68 69 70 71 72)
 DEFAULT_WEB_HOSTS=(50 54)
 DEFAULT_MODEL_HOSTS=(208 209)
 DEFAULT_BATCH_HOSTS=(17 18)
 DEFAULT_API_HOSTS=(58 60 69 71 72 73 74 75 76 77 78 79 83 84 85 102 134 135 136)
-DEFAULT_US_HOSTS=(4 35 80 90 93 105 139 143 168 187)
+DEFAULT_US_HOSTS=(4 27 35 37 44 90 93 105 108 139 143 156 165)
 DEFAULT_TRAIN_HOSTS=(61 62 63 81 82)
-DEFAULT_AEROSPIKE_HOSTS=$(seq 246 252)
 
-DEFAULT_HOST_PREFIX="172.25.52."
+DEFAULT_HOST_PREFIX="172.26.3."
 
 USAGE="
 Usage:
@@ -48,7 +48,7 @@ do
         -u) user=$2; shift 2;;
         -z) user="zhangjiguo"; shift;;
         -c) commands=$2; shift 2;;
-        -j) jump="-J 183.60.177.228"; shift;;
+        -j) jump="-J git.tuputech.com"; shift;;
         -J) jump="-J $2"; shift 2;;
         -k) public_key=$2; shift 2;;
         --) shift; break;;
@@ -136,6 +136,7 @@ case "${host}" in
 
         for host in ${hosts[*]}
         do
+            host="172.26.2.${host}"
             remote_run
         done
         exit 0;;
