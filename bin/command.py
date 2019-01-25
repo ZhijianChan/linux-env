@@ -73,7 +73,7 @@ class MyCommand(object):
         elif cmd_args['--jump-host']:
             jump = cmd_args['--jump-host']
 
-        print('host: {} jump: {} command: {}'.format(host, jump, command))
+        print('\033[1;32m=======> host: {} jump: {} command: {}\033[0m'.format(host, jump, command))
 
         try:
             if jump and command:
