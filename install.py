@@ -158,7 +158,8 @@ class Setup(object):
             os.chdir(working_dir)
 
     def start(self):
-        # sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), _fg=True)
+        sh.rm('-rf', wpath('bin/tp'), **SHARG)
+        sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), _fg=True)
         for module in ['zsh', 'vim', 'git', 'ssh', 'tmux', 'python', 'clang', 'dircolors']:
             print('{0:-^{1}}'.format(' {} environment '.format(module).upper(),
                                      os.get_terminal_size().columns))
