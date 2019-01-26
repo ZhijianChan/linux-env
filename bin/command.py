@@ -98,13 +98,17 @@ class MyCommand(object):
             print('command is None!')
             return
 
-        if isinstance(self.config.get('{}_host'.format(host), None), (list, tuple)):
+        _host = '{}_host'.format(host)
+        if isinstance(self.config.get(_host, None), (list, tuple)):
             if cmd_args['--command']:
                 for _host in self.config['{}_host'.format(host)]:
                     self._remote_host_command(host=_host, command=cmd_args['--command'])
                 return
             print('command is None!')
             return
+
+        if _host in self.config:
+            host = self.config[_host]
 
         # short host match
         for num in range(256):
@@ -118,7 +122,7 @@ class MyCommand(object):
                 host = '172.25.{}'.format(host)
                 break
 
-        self._remote_host_command(host=self.config.get(host, host), command=cmd_args['--command'])
+        self._remote_host_command(host=host, command=cmd_args['--command'])
 
 
 if __name__ == "__main__":
