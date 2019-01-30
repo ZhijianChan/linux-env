@@ -64,8 +64,12 @@ class MyCommand(object):
         sh.Command('ssh-add')(os.path.expanduser('~/.ssh/id_rsa'), _fg=True)
 
     def _remote_host_command(self, host, command=None):
+        if not host:
+            print('\033[31mhost invalid!\033[0m host: {}'.format(host))
+            return
+
         user = cmd_args['--user'] or self.config['username'] or self._default_user
-        host = '{}@{}'.format(user, host)
+        host = '{}@{}'.format(user, self._match_short_host(host))
 
         jump = None
         if cmd_args['--jump'] and self.config.get('jump_host'):
@@ -87,6 +91,21 @@ class MyCommand(object):
         except sh.ErrorReturnCode:
             print('{}ERROR{}'.format(COLOR_RED, COLOR_DEFAULT))
 
+    def _match_short_host(self, host):
+        for num in range(256):
+            if host == '{}'.format(num):
+                return '172.26.3.{}'.format(host)
+
+            if host in ['2.{}'.format(num), '3.{}'.format(num)]:
+                return '172.26.{}'.format(host)
+
+            if host in ['52.{}'.format(num), ]:
+                return '172.25.{}'.format(host)
+
+            if host in ['1.{}'.format(num), ]:
+                return '192.168.{}'.format(host)
+        return host
+
     def remote_command(self):
         host = cmd_args['--host'] or cmd_args['<host>']
         if host in ['api', 'train', 'web']:
@@ -98,29 +117,25 @@ class MyCommand(object):
             print('command is None!')
             return
 
-        _host = '{}_host'.format(host)
-        if isinstance(self.config.get(_host, None), (list, tuple)):
+        host_key = '{}_host'.format(host)
+        if isinstance(self.config.get(host_key, None), (list, tuple)):
             if cmd_args['--command']:
-                for _host in self.config['{}_host'.format(host)]:
+                for _host in self.config[host_key]:
                     self._remote_host_command(host=_host, command=cmd_args['--command'])
                 return
             print('command is None!')
             return
 
-        if _host in self.config:
-            host = self.config[_host]
+        if host_key in self.config:
+            host = self.config[host_key]
 
-        # short host match
-        for num in range(256):
-            if host == '{}'.format(num):
-                host = '172.26.3.{}'.format(host)
-                break
-            elif host in ['2.{}'.format(num), '3.{}'.format(num)]:
-                host = '172.26.{}'.format(host)
-                break
-            elif host in ['52.{}'.format(num), ]:
-                host = '172.25.{}'.format(host)
-                break
+        if ',' in host:
+            if cmd_args['--command']:
+                for _host in host.split(','):
+                    self._remote_host_command(host=_host, command=cmd_args['--command'])
+                return
+            print('command is None!')
+            return
 
         self._remote_host_command(host=host, command=cmd_args['--command'])
 
