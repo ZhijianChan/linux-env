@@ -10,8 +10,8 @@ Options:
     --host=<host>, -h <host>                        remote host.
     --command=<command>, -c <command>               remote run command.
     --user=<user>, -u <user>                        remote login user.
-    --jump-host=<jump_host>, -j <jump_host>         jump host.
-    --jump, -J                                      use default jump host [default: false].
+    --jump-host=<jump_host>, -J <jump_host>         jump host.
+    --jump, -j                                      use default jump host [default: false].
 '''
 
 import os
