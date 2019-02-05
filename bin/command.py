@@ -3,6 +3,8 @@
 Usage:
     command.py route
     command.py fixssh
+    command.py addkey --host=<host> --user=<user> --public-key=<key>
+    command.py adduser --host=<host> --name=<name> [--public-key=<key>] [--shell=<shell> | --zsh]
     command.py [--host=<host> | <host>] [--command=<command>] [--user=<user>]
                [--jump-host=<jump_host> | --jump]
 
@@ -139,6 +141,12 @@ class MyCommand(object):
 
         self._remote_host_command(host=host, command=cmd_args['--command'])
 
+    def create_user(self):
+        pass
+
+    def append_public_key(self):
+        pass
+
 
 if __name__ == "__main__":
     from docopt import docopt
@@ -151,5 +159,9 @@ if __name__ == "__main__":
         my_command.route()
     elif cmd_args['fixssh']:
         my_command.fixssh()
+    elif cmd_args['adduser']:
+        my_command.create_user()
+    elif cmd_args['addkey']:
+        my_command.append_public_key()
     else:
         my_command.remote_command()
