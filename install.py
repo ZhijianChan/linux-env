@@ -38,7 +38,8 @@ class Setup(object):
         return version.split()[1]
 
     def _get_python_path(self):
-        python_paths = [str(sh.which('python')), str(sh.which('python3')), str(sh.which('python2'))]
+        _python_paths = [sh.which('python'), sh.which('python3'), sh.which('python2')]
+        python_paths = [str(path) for path in _python_paths if path]
         if os.path.isfile('/usr/local/python-3.6.5/bin/python'):
             python_paths.append('/usr/local/python-3.6.5/bin/python')
 
@@ -76,6 +77,11 @@ class Setup(object):
 
     def _get_extra_paths(self):
         extra_paths = []
+        for path in [os.path.dirname(self.python_path), '/usr/local/protobuf-3.5.2/bin',
+                     '/usr/local/vim-release/bin']:
+            if os.path.exists(path):
+                extra_paths.append(path)
+        print(extra_paths)
         return extra_paths
 
     def _python_environment(self):
@@ -159,11 +165,14 @@ class Setup(object):
 
     def start(self):
         sh.rm('-rf', wpath('bin/tp'), **SHARG)
-        sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), _fg=True)
+        sh.ln('-s', wpath('bin/command.py'), wpath('bin/tp'), **SHARG)
+        rows, columns = os.popen('stty size', 'r').read().split()
+        terminal_width = int(columns)
         for module in ['zsh', 'vim', 'git', 'ssh', 'tmux', 'python', 'clang', 'dircolors']:
-            print('{0:-^{1}}'.format(' {} environment '.format(module).upper(),
-                                     os.get_terminal_size().columns))
+            print('{0:-^{1}}'.format(' {} environment '.format(module).upper(), terminal_width))
             getattr(self, '_{}_environment'.format(module))()
+
+        sh.zsh(hpath('.zshrc'), **SHARG)
 
 
 if __name__ == "__main__":
