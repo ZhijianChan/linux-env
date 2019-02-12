@@ -80,14 +80,13 @@ prompt_end() {
 # Context: user@hostname (who am I and where am I)
 prompt_context() {
   if [ $(uname) = "Darwin" ]; then
-    if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-      prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}%{$fg_no_bold[green]%}%D{%H:%M:%S}"
-    fi
+    host_ip=$(/sbin/ifconfig | grep -oE "192.168.[1|2].[0-9]{1,3}" | grep -vE "255$" | head -n1)
   else
     host_ip=$(/usr/sbin/ip addr | grep -oE "172.25.5[2|8].[0-9]{1,3}|172.26.[2|3].[0-9]{1,3}" | grep -v 255 | head -n1)
-    if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-      prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}$host_ip%{$fg_no_bold[green]%}"
-    fi
+  fi
+
+  if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+    prompt_segment black default "%(!.%{%F{yellow}%}.)%{$fg_bold[red]%}$host_ip%{$fg_no_bold[green]%}"
   fi
 }
 
